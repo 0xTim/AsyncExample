@@ -4,11 +4,11 @@ import PackageDescription
 let package = Package(
     name: "AsyncExample",
     platforms: [
-       .macOS(.v10_15)
+        .macOS(.v10_15)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/vapor.git", .branch("async-await")),
     ],
     targets: [
         .target(
@@ -20,7 +20,10 @@ let package = Package(
                 // Enable better optimizations when building in Release configuration. Despite the use of
                 // the `.unsafeFlags` construct required by SwiftPM, this flag is recommended for Release
                 // builds. See <https://github.com/swift-server/guides/blob/main/docs/building.md#building-for-production> for details.
-                .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
+                .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)),
+                .unsafeFlags([
+                    "-Xfrontend", "-disable-availability-checking",
+                ])
             ]
         ),
         .target(name: "Run", dependencies: [.target(name: "App")]),
